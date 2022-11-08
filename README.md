@@ -1,7 +1,6 @@
-- 👋 Hi, I’m @TongLuo2021
-- 👀 I’m interested in coding
-- 🌱 I’m currently learning python
-- 💞️ I’m looking to collaborate on new projects
+- 👋 Hi, I’m Tong Luo
+- 
+- 👀 - 💞️ I am a big fan on Deep Learning and Machine Learning, and I am looking for collaboration on new projects
 - 📫 How to reach me: email me at tong.luo2013@gmail.com
 
 <!---
