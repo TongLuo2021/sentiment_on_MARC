@@ -1,7 +1,8 @@
 ------------
-#Sentiment Analysis for Amazon Multilingual Review Corpus 
+#Sentiment Analysis for Amazon Multilingual Review Corpus using Bert Based Models
 ####Author: Tong Luo
 ####Date: 10/31/2022
+####Update: 11/29/2022
 ------------
 ### Introduction to Sentiment Analysis
 
@@ -16,14 +17,17 @@ Sentiment analysis have wide applications in broad variety of business. It produ
 
 Tradition machine learning methods use regression, classification, feature engineering methods. It is able to produce rating classifications but not perform well to catch semantic subtleties such as sarcasms in sentences, and misinterpret user's true intention. ["Attention"](https://drive.google.com/file/d/1ZnnayrP7Ue3gRWl7EycHRJuEelkUzNOo/view?usp=sharing) concept was proposed by Bahdanau[19](https://arxiv.org/abs/1409.0473),Minh-Tangh[20](https://arxiv.org/abs/1508.04025) to catch the context information for each word in sentences. Recent ["transformer"](https://drive.google.com/file/d/1LsT-esnOO0fdUcNviaGS68b-GRyjqywU/view?usp=sharing) [1](https://arxiv.org/pdf/1706.03762.pdf) based NLP models, such as Bert based models [2](https://arxiv.org/abs/1810.04805v2),[3](https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment), using [self and multi-headed attention](https://drive.google.com/file/d/1Ttdw1sST-w3R8qLOZGhFNHszBaySOKfz/view?usp=sharing), and [encoder-decoder attention](https://drive.google.com/file/d/1Oqz-RxpDJ_RyMjtzPpj65p4PYdcW9q4O/view?usp=sharing) mechanism [1](https://arxiv.org/pdf/1706.03762.pdf) have achieved significant higher accuracy in language understanding and shows promising new landscape for NLU applications.
 
-###My works for this assignment
+###T. Luo's works for this project
 ------------
 In this assignment I did sentiment analysis on Multilingual Amazon Revieew Corpus (MARC) dataset. The work is presented in following order:
   1. Data validation and visualization: check invalid data and data distribution.
   2. Using nlptown/bert-base-multilingual-uncased-sentiment model[3](https://huggingface.co/nlptown/bert-base-multilingual-uncased-sentiment) on MARC to produce user rating .This model was finetuned for sentiment analysis on product reviews in six languages: English, Dutch, German, French, Spanish and Italian. It predicts the sentiment of the review as a number of stars (between 1 and 5).
-  3. The initial result from the Bert-based system shows good accuracy (62.7%) on MARC data set. This Bert based model was not trained with Amazon dataset.
-  4. Literatures [12](https://arxiv.org/abs/1911.02116),[13](https://towardsdatascience.com/), shows RoBerta based has higher (~30%) accuracy performance. I find a lewtun/XML Roberta model from hugging face [4][5], which was trained on Amazon MARC and did a comparison with Bert based model. Surprisingly, the lewtun/XML-RoBERTa model produced lower accuracy (achieved 58.2%) than the Bert based model. I found out that simply padding to max-length can cause the model to lose focus significantly. I did some research and found "smart padding" [17](https://towardsdatascience.com/multilingual-amazon-reviews-classification-f55f8a650c9a) can improve sentimental accuracy.  
-  5. I also found out that differnt feature engineering can affect accuracy. Combining review_title and product_category with review_body can improve the accuracy. The order of the feature matters too. Best accuracy is achieved by puting review_title at first place, product_category at sencond place, and review_body at third place. I used "smart padding" together this multi-feature engineering technology in my analysis and achieved 65.4% accuracy, significantly better than the [Keung's paper](https://arxiv.org/abs/2010.02573) that introduced Amazon MARC dataset.
+  3. The initial result from the Bert-based system shows good accuracy (63.72%) on whole test set for 5 categories on MARC data set. This Bert based model was not trained with Amazon dataset.
+  4. Literatures [12](https://arxiv.org/abs/1911.02116),[13](https://towardsdatascience.com/), shows RoBerta based has higher (~30%) accuracy performance. I find a lewtun/XML Roberta model from hugging face [4][5], which was trained on Amazon MARC and did a comparison with Bert based model. Surprisingly, the lewtun/XML-RoBERTa model produced lower accuracy (achieved 55.96%) on whole test set than the Bert based model. I found out that simply padding to max-length can cause the model to lose focus significantly. I did some research and found "smart padding" [17](https://towardsdatascience.com/multilingual-amazon-reviews-classification-f55f8a650c9a) can improve sentimental accuracy.  
+  5. I also found out that differnt feature engineering can affect accuracy. Combining review_title and product_category with review_body can improve the accuracy. The order of the feature matters too. Best accuracy is achieved by puting review_title at first place, product_category at sencond place, and review_body at third place. I used "smart padding" together this multi-feature engineering technology in my analysis and achieved 64.62% accuracy on whle test set, significantly better than the [Keung's paper](https://arxiv.org/abs/2010.02573) that introduced Amazon MARC dataset.
+  6. I did hyperparameter optimization (HPO) using Optuna with default parameters.
+  7. Retrain the XML RoBERTa based model with the best run_parameters and obtain v4 version, and achieves higher accuracy (65.02%).
+  8. publish V4 to [Hugingface](https://huggingface.co/tlttl/tluo_xml_roberta_base_amazon_review_sentiment_v4). Please feel free and try it there. 
 ------------
 ##Tong's model win!
 ------------
@@ -31,10 +35,10 @@ In this assignment I did sentiment analysis on Multilingual Amazon Revieew Corpu
 * 2nd Place: NLPTown's Bert_base_Model          (0.627)
 * 3rd Place: Lewtun's XML_RoBerta_base          (0.582)
 ------------
-  6. I learned to used huggingface trainer to do the training job this, and published the trained model on hugging face for public [trail and download](https://huggingface.co/tlttl/tluo_xml_roberta_base_amazon_review_sentiment_v3) [18](https://huggingface.co/tlttl/tluo_xml_roberta_base_amazon_review_sentiment_v3) .
-  7. The original Amazon MARC dataset has 1.2M rows in training set, and 30k rows for validation and testing set. To speed up the training, I use dataset sharding technology, train the model on 1/10 of training, and 1/5 of validation data. Total training time is about 2.58 hours.
-  8. To fine tune the model, I used Auto hyper parameter search of this model and obtained optimized hyperparameter set.
-  9. Study Transformer and BERT architecture. Here is my [summary](https://drive.google.com/file/d/1Og0Ip334e5lDgvsSogejZ2l5FXtvVDsG/view?usp=sharing) and related [complexity analysis numbers](https://drive.google.com/file/d/1WOexPGcpbl9J3CtnRgMwGJWCyEOmCNyR/view?usp=sharing).
+  9. I learned to used huggingface trainer to do the training job this, and published the trained model on hugging face for public [trail and download](https://huggingface.co/tlttl/tluo_xml_roberta_base_amazon_review_sentiment_v3) [18](https://huggingface.co/tlttl/tluo_xml_roberta_base_amazon_review_sentiment_v3) .
+  10. The original Amazon MARC dataset has 1.2M rows in training set, and 30k rows for validation and testing set. To speed up the training, I use dataset sharding technology, train the model on 1/10 of training, and 1/5 of validation data. Total training time is about 2.58 hours.
+  11. To fine tune the model, I used Auto hyper parameter search of this model and obtained optimized hyperparameter set.
+  12. Study Transformer and BERT architecture. Here is my [summary](https://drive.google.com/file/d/1Og0Ip334e5lDgvsSogejZ2l5FXtvVDsG/view?usp=sharing) and related [complexity analysis numbers](https://drive.google.com/file/d/1WOexPGcpbl9J3CtnRgMwGJWCyEOmCNyR/view?usp=sharing).
 
 ###Future works:
 ------------
@@ -89,4 +93,3 @@ Bert was open sourced by Google Research [24](https://github.com/google-research
 24. Bert Source code, by Google Research[https://github.com/google-research/bert]
 25. Bert Out of memory issues [https://github.com/google-research/bert#out-of-memory-issues]
 26. Keung, Phillip et. al. The Multilingual Amazon Reviews Corpus[https://arxiv.org/abs/2010.02573]
-
